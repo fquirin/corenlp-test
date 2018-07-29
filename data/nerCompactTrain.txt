@@ -1,0 +1,17 @@
+﻿Show me the way from Berlin to Munich --- O O O O O LOC_START O LOC_END
+The way from New York to Jersey City --- O O O LOC_START LOC_START O LOC_END LOC_END
+The way from Jersey City to New York --- O O O LOC_START LOC_START O LOC_END LOC_END
+Way from LA to SF --- O O LOC_START O LOC_END
+Way from LA to SF please --- O O LOC_START O LOC_END O
+Way from NY to SF --- O O LOC_START O LOC_END
+I need to get from SF to NY --- O O O O O LOC_START O LOC_END
+Need to go from SF to NY --- O O O O LOC_START O LOC_END
+Way from A to B --- O O LOC_START O LOC_END
+Way from B to A --- O O LOC_START O LOC_END
+Way from B to A please --- O O LOC_START O LOC_END O
+Need a plane from LAX to JFK --- O O O O LOC_START O LOC_END
+Need a train from SF to LA please --- O O O O LOC_START O LOC_END O
+Do you know the way from SF to LA? --- O O O O O O LOC_START O LOC_END
+I want to visit the Statue of Liberty --- O O O O O LOC_END LOC_END LOC_END
+I wanna go to California --- O O O O LOC_END
+I'd like to visit the US --- O O O O O LOC_END
