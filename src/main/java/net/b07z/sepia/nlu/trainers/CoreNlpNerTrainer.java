@@ -18,17 +18,21 @@ public class CoreNlpNerTrainer implements NerTrainer {
 	Properties props;
 	private String modelFile;
 	CRFClassifier<CoreLabel> model;
+	String languageCode;
 
 	/**
 	 * Setup CoreNLP NER classifier with properties file and training data.
 	 * @param propertiesFile
-	 * @param trainDataFile
-	 * @param modelOutputFile
+	 * @param trainDataFileBase
+	 * @param modelOutputFileBase
+	 * @param languageCode
 	 */
-	public CoreNlpNerTrainer(String propertiesFile, String trainDataFile, String modelOutputFile){
-		this.modelFile = modelOutputFile;
+	public CoreNlpNerTrainer(String propertiesFile, String trainDataFileBase, String modelOutputFileBase, String languageCode){
+		this.languageCode = languageCode;
+		this.modelFile = modelOutputFileBase + "_" + this.languageCode;
+		String trainDataFile = trainDataFileBase + "_" + this.languageCode;
 		props = StringUtils.propFileToProperties(propertiesFile);
-		props.setProperty("serializeTo", modelOutputFile);
+		props.setProperty("serializeTo", this.modelFile);
 		props.setProperty("trainFile", trainDataFile);
 		
 		//Create a StanfordCoreNLP object 

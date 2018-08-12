@@ -1,6 +1,7 @@
 package net.b07z.sepia.nlu.analyzers;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -8,6 +9,9 @@ import java.util.regex.Pattern;
 import edu.stanford.nlp.ie.crf.CRFClassifier;
 import edu.stanford.nlp.ling.CoreAnnotations.AnswerAnnotation;
 import edu.stanford.nlp.ling.CoreLabel;
+import net.b07z.sepia.nlu.classifiers.NerClassifier;
+import net.b07z.sepia.nlu.classifiers.NerEntry;
+import net.b07z.sepia.nlu.classifiers.TokenLabel;
 import net.b07z.sepia.nlu.tokenizers.Tokenizer;
 
 /**
@@ -20,13 +24,17 @@ public class CoreNlpNerClassifier implements NerClassifier{
 	
 	private CRFClassifier<CoreLabel> model;
 	private Tokenizer tokenizer;
+	private String languageCode;
 	
 	/**
 	 * Create NER classifier with model and tokenizer.
-	 * @param model
+	 * @param modelFileBase
 	 * @param tokenizer
+	 * @param languageCode
 	 */
-	public CoreNlpNerClassifier(String modelFile, Tokenizer tokenizer){
+	public CoreNlpNerClassifier(String modelFileBase, Tokenizer tokenizer, String languageCode){
+		this.languageCode = languageCode;
+		String modelFile = modelFileBase + "_" + this.languageCode;
 		this.model = CRFClassifier.getClassifierNoExceptions(modelFile);
 		this.tokenizer = tokenizer;
 	}
@@ -39,7 +47,8 @@ public class CoreNlpNerClassifier implements NerClassifier{
 		for (CoreLabel cl : result) {
 			String label = cl.getString(AnswerAnnotation.class);
 			String token = cl.originalText();
-			NerEntry ne = new NerEntry(getOriginalToken(token, sentence), token, label, new String[]{label});
+			TokenLabel tl = new TokenLabel(token, label, -1.0);
+			NerEntry ne = new NerEntry(getOriginalToken(token, sentence), token, label, Arrays.asList(tl));
 			nerEntries.add(ne);
 		}
 		return nerEntries;
@@ -91,7 +100,8 @@ public class CoreNlpNerClassifier implements NerClassifier{
 				if (!label.matches(commonlabelRegex)){
 					lastLabel = label;
 					String token = cl.originalText();
-					ne = new NerEntry(getOriginalToken(token, sentence), token, label, new String[]{label});
+					TokenLabel tl = new TokenLabel(token, label, -1.0);
+					ne = new NerEntry(getOriginalToken(token, sentence), token, label, Arrays.asList(tl));
 					nerEntries.add(ne);
 				}else{
 					ne = null;
