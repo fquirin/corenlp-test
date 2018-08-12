@@ -39,19 +39,40 @@ public class CoreNlpNerClassifier implements NerClassifier{
 		for (CoreLabel cl : result) {
 			String label = cl.getString(AnswerAnnotation.class);
 			String token = cl.originalText();
-			NerEntry ne = new NerEntry(getOriginalToken(token, sentence), token, label);
+			NerEntry ne = new NerEntry(getOriginalToken(token, sentence), token, label, new String[]{label});
 			nerEntries.add(ne);
 		}
 		return nerEntries;
 	}
 	
 	@Override
-	public List<NerEntry> getEntities(String sentence) {
+	public List<NerEntry> getEntities(String sentence, boolean fuseSame, boolean removeDefaultLabel) {
 		String normSentence = tokenizer.normalizeSentence(sentence);
-		String BOS = Pattern.quote(tokenizer.getBeginningOfSentenceLabel().trim());
-		String EOS = Pattern.quote(tokenizer.getEndOfSentenceLabel().trim());
-		String SEP = Pattern.quote(tokenizer.getSeparatorLabel().trim());
-		String commonlabelRegex = "O" + "|" + BOS + "|" + EOS + "|" + SEP;
+		
+		//filter special labels
+		StringBuffer sb = new StringBuffer();
+		if (removeDefaultLabel){
+			sb.append("O");
+		}
+		String BOS = tokenizer.getBeginningOfSentenceLabel().trim();
+		String EOS = tokenizer.getEndOfSentenceLabel().trim();
+		String SEP = tokenizer.getSeparatorLabel().trim();
+		if (!BOS.isEmpty()){
+			sb.append("|");
+			sb.append(Pattern.quote(BOS));
+		}
+		if (!EOS.isEmpty()){
+			sb.append("|");
+			sb.append(Pattern.quote(EOS));
+		}
+		if (!SEP.isEmpty()){
+			sb.append("|");
+			sb.append(Pattern.quote(SEP));
+		}
+		String commonlabelRegex = sb.toString().replaceFirst("^\\|", "").toString();
+		//System.out.println("commonlabelRegex: " + commonlabelRegex); 			//DEBUG
+		//String commonlabelRegex = "O" + "|" + BOS + "|" + EOS + "|" + SEP;
+		
 		List<CoreLabel> result = model.classify(normSentence).get(0); 	//since this is one sentence it should return size=1
 		List<NerEntry> nerEntries = new ArrayList<>();
 		NerEntry ne = null;
@@ -59,7 +80,7 @@ public class CoreNlpNerClassifier implements NerClassifier{
 		for (CoreLabel cl : result) {
 			String label = cl.getString(AnswerAnnotation.class);
 			//add to previous entry?
-			if (ne != null && label.equals(lastLabel)){
+			if (fuseSame && ne != null && label.equals(lastLabel)){
 				String token = cl.originalText();
 				ne.addToken(token);
 				ne.addOriginalToken(getOriginalToken(token, sentence));
@@ -70,7 +91,7 @@ public class CoreNlpNerClassifier implements NerClassifier{
 				if (!label.matches(commonlabelRegex)){
 					lastLabel = label;
 					String token = cl.originalText();
-					ne = new NerEntry(getOriginalToken(token, sentence), token, label);
+					ne = new NerEntry(getOriginalToken(token, sentence), token, label, new String[]{label});
 					nerEntries.add(ne);
 				}else{
 					ne = null;

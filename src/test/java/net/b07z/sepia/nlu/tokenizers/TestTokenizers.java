@@ -15,12 +15,14 @@ public class TestTokenizers {
 		List<String> sentences = Arrays.asList(
 				"Hey what's up????",
 				"A text {A=1,t=2} with some special [spec.] characters!?!!?!??",
-				"Put milk, water and bread on my to-do list"
+				"Put milk, water and bread on my to-do list",
+				"I wanna fly to LA"
 		);
 		List<String> expected = Arrays.asList(
 				"[BOS, hey, whats, up, EOS]",
 				"[BOS, a, text, a=1, SEP, t=2, with, some, special, spec., characters, EOS]",
-				"[BOS, put, milk, SEP, water, and, bread, on, my, to-do, list, EOS]"
+				"[BOS, put, milk, SEP, water, and, bread, on, my, to-do, list, EOS]",
+				"[BOS, i, wanna, fly, to, la, EOS]"
 		);	
 		
 		Tokenizer tokenizer = new RealLifeChatTokenizer();

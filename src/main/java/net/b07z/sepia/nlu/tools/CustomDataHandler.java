@@ -18,7 +18,7 @@ public class CustomDataHandler {
 	private static final String CUSTOM_DATA_SEPERATOR = " --- ";
 	
 	/**
-	 * Import data from a custom "compact" to a map with key=sentence, value=labels.
+	 * Import data from a custom "compact" file to a map with key=sentence, value=labels.
 	 * @param filePath
 	 * @return
 	 * @throws IOException
