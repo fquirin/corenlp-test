@@ -31,7 +31,7 @@ public class CoreNlpDemo {
 		String nerCompactTrainDataFile = "data/nerCompactTrain.txt";
 		String nerCompactTestDataFile = "data/nerCompactTest.txt";
 		String coreNlpPropertiesFile = "data/corenlp.properties";
-		String coreNlpModelFile = "data/corenlp.model";		//add .gz for auto-compression
+		String coreNlpModelFile = "data/corenlp_model";		//add .gz for auto-compression
 		String coreNlpTrainFile = "data/corenlp_train.txt";
 		
 		//Create training data from compact custom format
